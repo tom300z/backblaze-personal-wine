@@ -17,6 +17,7 @@ function configure_wine {
 	wine reg add "HKLM\\SYSTEM\\CurrentControlSet\\Control\\ComputerName\\ActiveComputerName" /v ComputerName /f /d $COMPUTER_NAME
 }
 
+cp $WINEPREFIX/drive_c/Program\ Files/Backblaze/bzbui.exe.aside $WINEPREFIX/drive_c/Program\ Files/Backblaze/bzbui.exe
 until [ -f $WINEPREFIX/drive_c/Program\ Files/Backblaze/bzbui.exe ]; do
 	echo "Backblaze not installed"
 	echo "Initializing the wine prefix"
@@ -29,6 +30,7 @@ until [ -f $WINEPREFIX/drive_c/Program\ Files/Backblaze/bzbui.exe ]; do
 	echo "Installation finished or aborted, trying to start the Backblaze client..."
 	wineserver -k
 done
+
 
 if [ -f $WINEPREFIX/drive_c/Program\ Files/Backblaze/bzbui.exe ]; then
 	configure_wine
