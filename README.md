@@ -117,7 +117,7 @@ I'd also reccommend to remove the blacklisted file extensions from the "Exclusio
 Once you hit "Ok" or "Apply" the client will start scanning your drives again, this might take a very long time depending on the number of files you mounted under the /data/ dir, just be patient and leave the container running.
 You can dis- and reconnect from and to the VNC server at any time, this will not affect the Backblaze client.
 
-When the analysis is complete make shoure the client performs the initial backup (this should happen automatically).
+When the analysis is complete make sure the client performs the initial backup (this should happen automatically).
 Depending on the number and size of the files you want to back up and your upload speed, this will take quite some time.
 If you have to stop the container during the initial backup the backup will continue where it left once the container is started again.
 
