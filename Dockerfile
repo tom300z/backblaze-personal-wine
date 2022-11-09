@@ -5,6 +5,20 @@ RUN apk --update --no-cache add xvfb x11vnc openbox samba-winbind-clients
 RUN echo "https://dl-4.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     apk --no-cache add wine
 
+# Install Languages
+ENV MUSL_LOCPATH="/usr/share/i18n/locales/musl"
+RUN apk --no-cache add libintl && \
+    apk --no-cache --virtual .locale_build add cmake make musl-dev gcc gettext-dev git && \
+    git clone https://gitlab.com/rilian-la-te/musl-locales && \
+    cd musl-locales && cmake -DLOCALE_PROFILE=OFF -DCMAKE_INSTALL_PREFIX:PATH=/usr . && make && make install && \
+    cd .. && rm -r musl-locales && \
+    apk del .locale_build
+
+# Set Language
+ENV LANG de_DE.UTF-8
+ENV LANGUAGE de_DE:de
+ENV LC_ALL de_DE.UTF-8
+
 # Configure the virtual display port
 ENV DISPLAY :0
 
