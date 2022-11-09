@@ -1,23 +1,27 @@
 FROM i386/alpine:3.12.1
 
+# Set your prefered Language
+#ENV SETLANGUAGE=en_US.UTF-8
+ENV SETLANGUAGE=de_DE.UTF-8
+
 # Install required packages
-RUN apk --update --no-cache add xvfb x11vnc openbox samba-winbind-clients 
-RUN echo "https://dl-4.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
-    apk --no-cache add wine
+RUN apk --update --no-cache add wine xvfb x11vnc openbox samba-winbind-clients \
+    font-misc-misc ttf-dejavu ttf-font-awesome
 
 # Install Languages
 ENV MUSL_LOCPATH="/usr/share/i18n/locales/musl"
 RUN apk --no-cache add libintl && \
     apk --no-cache --virtual .locale_build add cmake make musl-dev gcc gettext-dev git && \
-    git clone https://gitlab.com/rilian-la-te/musl-locales && \
+    git clone https://gitlab.com/rilian-la-te/musl-locales.git && \
     cd musl-locales && cmake -DLOCALE_PROFILE=OFF -DCMAKE_INSTALL_PREFIX:PATH=/usr . && make && make install && \
     cd .. && rm -r musl-locales && \
     apk del .locale_build
 
 # Set Language
-ENV LANG de_DE.UTF-8
-ENV LANGUAGE de_DE:de
-ENV LC_ALL de_DE.UTF-8
+ENV LC_ALL $SETLANGUAGE
+
+# Disable openbox right click menu
+COPY rc.xml /root/.config/openbox/rc.xml
 
 # Configure the virtual display port
 ENV DISPLAY :0
