@@ -10,9 +10,7 @@ Modifications by semool:
 * Add Language Support (Set it in Dockerfile: SETLANGUAGE)
 * Add required Fonts for Openbox Font Issue
 * Disable openbox right click menu (not required)
-* After Backblaze Client Installation deleting ALL x64 Binaries while this is a i386 only Container
-  Without deleting them the Client try continusly starting them and wine will go in Debug Mode = High CPU Load!
-  When a Message Pops up with Client is not installed correctly....Click OK and ignore. Client will run fine!
+* After Backblaze Client Installation deleting ALL x64 Binaries while this is a i386 only Container. Without deleting them the Client try continusly starting them and wine will go in Debug Mode = High CPU Load! When a Message Pops up with Client is not installed correctly....Click OK and ignore. Client will run fine!
 * The Complete Container will have only ~317MB!
 
 ## Option 1: Docker compose example using a HTML based noVNC client (recommended)
