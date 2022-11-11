@@ -5,7 +5,7 @@ FROM i386/alpine:3.12.1
 ENV SETLANGUAGE=de_DE.UTF-8
 
 # Install required packages
-RUN apk --update --no-cache add wine xvfb x11vnc openbox \
+RUN apk --update --no-cache add wine xvfb x11vnc openbox samba-winbind-clients \
     font-misc-misc ttf-dejavu ttf-font-awesome
 
 # Install Languages
@@ -38,6 +38,9 @@ ENV WINEDEBUG -all
 
 # Configure wine to run without mono or gecko as they are not required
 ENV WINEDLLOVERRIDES mscoree,mshtml=
+
+# Set the wine computer name
+ENV COMPUTER_NAME bz-docker
 
 # Create the data Directory
 RUN mkdir /data
