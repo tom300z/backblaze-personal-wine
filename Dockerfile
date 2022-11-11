@@ -45,6 +45,9 @@ ENV COMPUTER_NAME bz-docker
 # Create the data Directory
 RUN mkdir /data
 
+# Bugfix for fontconfig invalid cache files spam - BUG?!
+RUN rm -R /var/cache/fontconfig && ln -s /dev/null /var/cache/fontconfig
+
 # Copy the start script to the container
 COPY start.sh /start.sh
 
