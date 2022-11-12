@@ -5,8 +5,7 @@ FROM i386/alpine:3.12.1
 ENV SETLANGUAGE=de_DE.UTF-8
 
 # Install required packages
-RUN apk --update --no-cache add wine xvfb x11vnc openbox samba-winbind-clients \
-    font-misc-misc ttf-dejavu ttf-font-awesome
+RUN apk --update --no-cache add wine xvfb x11vnc openbox samba-winbind-clients ttf-dejavu
 
 # Install Languages
 ENV MUSL_LOCPATH="/usr/share/i18n/locales/musl"
@@ -46,7 +45,13 @@ ENV COMPUTER_NAME bz-docker
 RUN mkdir /data
 
 # Bugfix for fontconfig invalid cache files spam - BUG?!
-RUN rm -R /var/cache/fontconfig && ln -s /dev/null /var/cache/fontconfig
+RUN rm -R /usr/share/fonts/100dpi \
+          /usr/share/fonts/75dpi \
+          /usr/share/fonts/cyrillic \
+          /usr/share/fonts/encodings \
+          /usr/share/fonts/misc && \
+          rm -R /var/cache/fontconfig && \
+          ln -s /dev/null /var/cache/fontconfig
 
 # Copy the start script to the container
 COPY start.sh /start.sh
