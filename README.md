@@ -5,14 +5,51 @@ Then look no further, this container automatically creates a tiny Wine prefix th
 Please note, Linux specific file attributes (like ownership, acls or permissions) will not be backed up;
 
 Modifications by semool:
+* The Complete Image will have only ~367MB!
 * Set the right Alpine version (3.12)
 * Fix the Wine Install (4.0.3)
 * Add Language Support (Set it in Dockerfile: SETLANGUAGE)
 * Add required Fonts for Openbox Font Issue
 * Disable openbox right click menu (not required)
 * Workaround for fontconfig cache file spam in /var/cache/fontconfig
-* After Backblaze Client Installation deleting ALL x64 Binaries while this is a i386 only Container. Without deleting them the Client try continusly starting them and wine will go in Debug Mode = High CPU Load! When a Message Pops up with Client is not installed correctly....Click OK and ignore. Client will run fine!
-* The Complete Container will have only ~317MB!
+* After Backblaze Client Installation deleting ALL x64 Binaries while this is a i386 only Container. Without deleting them the Client try continusly starting them and wine will go in Debug Mode = High CPU Load! When a Message Pops up with Client is not installed correctly ignore it and click in the main Client Window to hide the Warning in the background. Client will run fine!
+* Adding noVNC Webinterface
+
+## Option for NEW Image: Docker run example
+<details>
+  <summary>Click to expand!</summary>
+
+```
+docker run -d \
+    -h Backblaze-PB \
+    --init \
+    -p 5900:5900 \
+    -p 6080:6080 \
+    --name=backblaze \
+    --restart=always \
+    backblaze-personal-wine-x86:latest
+```
+
+### Connecting to the VNC Server
+To go through the setup process you must connect to the integrated vnc server via a client like RealVNC Client.
+address: your.linux.ip.address:5900
+user: none (admin)
+password: none
+
+### Connecting to the VNC Server (Webinterface)
+You can open the noVNC client in your browser (make sure your firewall allows acess to the port):
+address: http://your.linux.ip.address:6080
+
+### Security
+The server runs an unencrypted integrated VNC server. 
+If you need to connect to the vnc server from a different machine (on headless systems), please make sure to configure your firewall to only allow local connections to the VNC.
+firewalld example:
+```
+firewall-cmd --permanent --add-rich-rule "rule family="ipv4" source address="192.168.178.0/24" port port="5900" protocol="tcp" accept"
+firewall-cmd --permanent --add-rich-rule "rule family="ipv4" source address="192.168.178.0/24" port port="6080" protocol="tcp" accept"
+firewall-cmd --reload
+```
+</details><br/>
 
 ## Option 1: Docker compose example using a HTML based noVNC client (recommended)
 <details>

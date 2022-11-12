@@ -2,6 +2,10 @@ echo "Starting the virtual display & vnc server"
 rm -f /tmp/.X0-lock
 Xvfb :0 -screen 0 700x570x24 & openbox & x11vnc -nopw -q -forever -loop -shared &
 
+if [ -f /opt/noVNC/utils/novnc_proxy ]; then
+  /opt/noVNC/utils/novnc_proxy --vnc :5900 &
+fi
+
 function configure_wine {
   unlink $WINEPREFIX/dosdevices/z:
   ln -s /data/ $WINEPREFIX/dosdevices/d:

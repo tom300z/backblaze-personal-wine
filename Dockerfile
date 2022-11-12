@@ -5,16 +5,27 @@ FROM i386/alpine:3.12.1
 ENV SETLANGUAGE=de_DE.UTF-8
 
 # Install required packages
-RUN apk --update --no-cache add wine xvfb x11vnc openbox samba-winbind-clients ttf-dejavu
+RUN apk --update --upgrade --no-cache add wine xvfb x11vnc openbox samba-winbind-clients ttf-dejavu
+
+# Install noVNC
+RUN apk --no-cache add bash python3 procps && apk --no-cache --virtual .build-deps add git build-base python3-dev py-pip && \
+    # Not needed for this purpose and saves ~100MB # pip install --no-cache-dir numpy && \
+    git config --global advice.detachedHead false && git clone https://github.com/novnc/noVNC --branch v1.3.0 /opt/noVNC && \
+    git clone https://github.com/novnc/websockify --branch v0.10.0 /opt/noVNC/utils/websockify && \
+    apk del .build-deps && \
+    rm -R /opt/noVNC/.git* && \
+    rm -R /opt/noVNC/utils/websockify/.git* && \
+    cp /opt/noVNC/vnc.html /opt/noVNC/index.html && \
+    sed -i s"/'autoconnect', false/'autoconnect', 'true'/" /opt/noVNC/app/ui.js
 
 # Install Languages
 ENV MUSL_LOCPATH="/usr/share/i18n/locales/musl"
 RUN apk --no-cache add libintl && \
-    apk --no-cache --virtual .locale_build add cmake make musl-dev gcc gettext-dev git && \
+    apk --no-cache --virtual .build-deps add cmake make musl-dev gcc gettext-dev git && \
     git clone https://gitlab.com/rilian-la-te/musl-locales.git && \
     cd musl-locales && cmake -DLOCALE_PROFILE=OFF -DCMAKE_INSTALL_PREFIX:PATH=/usr . && make && make install && \
     cd .. && rm -r musl-locales && \
-    apk del .locale_build
+    apk del .build-deps
 
 # Set Language
 ENV LC_ALL $SETLANGUAGE
@@ -25,8 +36,8 @@ COPY rc.xml /root/.config/openbox/rc.xml
 # Configure the virtual display port
 ENV DISPLAY :0
 
-# Expose the vnc port
-EXPOSE 5900
+# Expose the VNC and noVNC-Web port
+EXPOSE 5900 6080
 
 # Configure the wine prefix location
 RUN mkdir /wine
@@ -44,7 +55,7 @@ ENV COMPUTER_NAME bz-docker
 # Create the data Directory
 RUN mkdir /data
 
-# Bugfix for fontconfig invalid cache files spam - BUG?!
+# Workaround for fontconfig invalid cache files spam - BUG?!
 RUN rm -R /usr/share/fonts/100dpi \
           /usr/share/fonts/75dpi \
           /usr/share/fonts/cyrillic \
