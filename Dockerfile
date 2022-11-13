@@ -17,6 +17,9 @@ RUN apk --no-cache add bash python3 procps && apk --no-cache --virtual .build-de
     rm -R /opt/noVNC/utils/websockify/.git* && \
     cp /opt/noVNC/vnc.html /opt/noVNC/index.html && \
     sed -i s"/'autoconnect', false/'autoconnect', 'true'/" /opt/noVNC/app/ui.js
+# Replace noVNC Favicon
+COPY icons.zip /opt/noVNC/app/images/icons/
+RUN unzip -o /opt/noVNC/app/images/icons/icons.zip -d /opt/noVNC/app/images/icons/ && rm /opt/noVNC/app/images/icons/icons.zip
 
 # Install Languages
 ENV MUSL_LOCPATH="/usr/share/i18n/locales/musl"
